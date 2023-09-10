@@ -110,3 +110,6 @@ Cada elemento de la entidad DEPARTAMENTO puede estar asociado con una o muchos e
 ## Implementación
 
 ## Pruebas
+
+## despues del proyecto preguntar es mejor dpi_ciudadno o solo dpi
+osea la sintaxis atribut_nombre_tabla es mejor?
