@@ -111,5 +111,11 @@ Cada elemento de la entidad DEPARTAMENTO puede estar asociado con una o muchos e
 
 ## Pruebas
 
-## despues del proyecto preguntar es mejor dpi_ciudadno o solo dpi
-osea la sintaxis atribut_nombre_tabla es mejor?
+## Iniciar servidor con NODEJS
+1. npm init -y
+2. npm install express
+3. npm install nodemon -D
+4. npm install dotenv
+5. npm install mysql2
+6. npm install cors
+7. crear achivo .gitignore
