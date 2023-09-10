@@ -37,3 +37,15 @@ CREATE TABLE IF NOT EXISTS cargo (
     CONSTRAINT PK_cargo PRIMARY KEY (id_cargo)
 );
 
+-- TABLAS CON DEPENDENCIA
+
+-- TABLA CANDIDATO
+CREATE TABLE IF NOT EXISTS candidato (
+    id_candidato INT NOT NULL AUTO_INCREMENT,
+    nombre_candidato VARCHAR(50) NOT NULL,
+    fecha_nacimiento_candidato DATE,
+    cargo_id INT NOT NULL,
+    CONSTRAINT Pk_candidato PRIMARY KEY (id_candidato),
+    FOREIGN KEY (cargo_id)
+    REFERENCES cargo(id_cargo)
+);
