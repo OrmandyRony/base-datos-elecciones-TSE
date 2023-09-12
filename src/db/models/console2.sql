@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CIUDADANOS (
     edad_ciudadano INT NOT NULL,
     genero_ciudadano VARCHAR(1) NOT NULL,
     direccion_ciudadano VARCHAR(100) NOT NULL,
+    telefono_ciudadano VARCHAR(12) NOT NULL,
     CONSTRAINT PK_ciudadano PRIMARY KEY (dpi_ciudadano)
 );
 
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.PARTIDOS (
 -- TABLA CARGOS
 CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CARGOS (
     id_cargo INT NOT NULL AUTO_INCREMENT,
-    nombre_cargo VARCHAR(20) NOT NULL,
+    nombre_cargo VARCHAR(50) NOT NULL,
     CONSTRAINT PK_cargo PRIMARY KEY (id_cargo)
 );
 
