@@ -424,9 +424,7 @@ exports.crearTablas= async (req, res) => {
         // Cierra la conexión
         await connection.end();
 
-        res.status(200).json({
-            body: { res: true, message: 'TABLAS TEMPORAL DE PARTIDOS HAN SIDO CREADAS EXITOSAMENTE :D' },
-        });
+
 
     } catch (error) {
         console.log(error);
@@ -436,11 +434,13 @@ exports.crearTablas= async (req, res) => {
     }
 
     const scriptCrearTablaTemporalVotos = `
+    -- TABLA TEMPORAL DE VOTOS
     CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.VOTOS_TEMPORALES (
+        fecha_hora_voto DATETIME NOT NULL,
+        dpi_ciudadano VARCHAR(13) NOT NULL,
         id_voto INT NOT NULL,
         id_mesa INT NOT NULL,
-        id_candidato INT NOT NULL,
-        dpi_ciudadano VARCHAR(13) NOT NULL
+        id_candidato INT NOT NULL
     );
     `;
 
@@ -475,14 +475,26 @@ exports.crearTablas= async (req, res) => {
             const id_candidato = fields[1];
             const dpi_ciudadano = fields[2];
             const id_mesa = fields[3];
-            const fecha_voto = fields[4];
+            const fecha_hora_voto = fields[4];
+            // Separar fecha y hora
+            const fecha_hora = fecha_hora_voto.split(' ');
+            const fecha = fecha_hora[0];
+            const hora = fecha_hora[1];
+            // Cambiar formato de fecha
+            const fecha_latam = fecha.split('/');
+            const year = fecha_latam[2];
+            const month = fecha_latam[1];
+            const day = fecha_latam[0];
+            const fecha_voto = `${year}-${month}-${day}`;
+            // Fecha y hora completas
+            const fecha_hora_voto_final = `${fecha_voto} ${hora}`;
 
             //console.log("vamos dentro: ",nombre, correo, direccion);
             // Insertar los datos en la tabla temporal
             await db.querywithoutclose(connection, 
                 `INSERT INTO TSE_Elecciones_DB.VOTOS_TEMPORALES
-                (id_voto, id_mesa, id_candidato, dpi_ciudadano) 
-                VALUES (?, ?)`, [id_voto, id_mesa, id_candidato, dpi_ciudadano]);
+                (id_voto, id_mesa, id_candidato, dpi_ciudadano, fecha_hora_voto) 
+                VALUES (?, ?, ?, ?, ?)`, [id_voto, id_mesa, id_candidato, dpi_ciudadano, fecha_hora_voto_final]);
         }
         console.log('FIN DE CARGA DE DATOS VOTOS EN LA TABLA TEMPORAL');
 
@@ -490,9 +502,14 @@ exports.crearTablas= async (req, res) => {
         //console.log(tempClientesData);
 
         // por ultimo pasamos los datos de la tabla temporal a la tabla clientes
-        await db.querywithoutclose(connection, `INSERT INTO TSE_Elecciones_DB.VOTOS 
-        (id_voto, id_mesa, id_candidato, dpi_ciudadano)) 
-        SELECT id_voto, id_mesa, id_candidato, dpi_ciudadano FROM TSE_Elecciones_DB.VOTOS_TEMPORALES`, []);
+        await db.querywithoutclose(connection, `INSERT INTO TSE_Elecciones_DB.VOTOS
+        (fecha_hora_voto ,id_mesa, dpi_ciudadano)
+        SELECT  DISTINCT  fecha_hora_voto ,id_mesa, dpi_ciudadano
+        FROM  TSE_Elecciones_DB.VOTOS_TEMPORALES;`, []);
+
+        await db.querywithoutclose(connection, `INSERT INTO TSE_Elecciones_DB.DETALLE_VOTOS
+        (id_voto, id_candidato)
+        SELECT id_voto, id_candidato FROM TSE_Elecciones_DB.VOTOS_TEMPORALES;`, []);
 
         // Cierra la conexión
         await connection.end();

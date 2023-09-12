@@ -119,3 +119,6 @@ Cada elemento de la entidad DEPARTAMENTO puede estar asociado con una o muchos e
 5. npm install mysql2
 6. npm install cors
 7. crear achivo .gitignore
+Porque usaron tal atributo y su tipo
+Eliminar tablas 
+Consulta foro

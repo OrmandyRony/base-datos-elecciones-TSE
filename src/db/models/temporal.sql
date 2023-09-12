@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.VOTOS_TEMPORALES (
     id_voto INT NOT NULL,
     id_mesa INT NOT NULL,
     id_candidato INT NOT NULL,
-
-    
+  
 );
 
