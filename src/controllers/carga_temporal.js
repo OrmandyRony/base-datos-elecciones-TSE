@@ -16,7 +16,7 @@ const filePathVotaciones = path.join(__dirname, './TSEdatasets/votaciones.csv');
 exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTempoalPartidos = `-- TABLA TEMPORAL DE PARTIDOS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.PARTIDOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.PARTIDOS_TEMPORALES (
         id_partido INT NOT NULL,
         nombre_partido VARCHAR(50) NOT NULL,
         siglas_partido VARCHAR(30) NOT NULL,
@@ -92,7 +92,7 @@ exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTempoalDepartamentos = `
     -- TABLA TEMPORAL DE DEPARTAMENTOS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.DEPARTAMENTOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.DEPARTAMENTOS_TEMPORALES (
         id_departamento INT NOT NULL,
         nombre_departamento VARCHAR(100) NOT NULL
     );
@@ -155,7 +155,7 @@ exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTempoalCiudadanos = `
     -- TABLA TEMPORAL DE CIUDADANOS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CIUDADANOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.CIUDADANOS_TEMPORALES (
         dpi_ciudadano VARCHAR(13) NOT NULL,
         nombre_ciudadano VARCHAR(100) NOT NULL,
         apellido_ciudadano VARCHAR(100) NOT NULL,
@@ -227,7 +227,7 @@ exports.crearTablas= async (req, res) => {
     }
 
     const scriptCrearTablaTemporalCargos = `
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CARGOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.CARGOS_TEMPORALES (
         id_cargo INT NOT NULL,
         nombre_cargo VARCHAR(50) NOT NULL
     );
@@ -290,7 +290,7 @@ exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTemporalCandidatos = `
     -- TABLA TEMPORAL DE CANDIDATOS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CANDIDATOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.CANDIDATOS_TEMPORALES (
         id_candidato INT NOT NULL,
         nombre_candidato VARCHAR(50) NOT NULL,
         fecha_nacimiento_candidato DATE,
@@ -369,7 +369,7 @@ exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTemporalMesas = `
     -- TABLA TEMPORAL DE MESAS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.MESAS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.MESAS_TEMPORALES (
         id_mesa INT NOT NULL,
         id_departamento INT NOT NULL
     );
@@ -435,7 +435,7 @@ exports.crearTablas= async (req, res) => {
 
     const scriptCrearTablaTemporalVotos = `
     -- TABLA TEMPORAL DE VOTOS
-    CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.VOTOS_TEMPORALES (
+    CREATE TEMPORARY TABLE IF NOT EXISTS TSE_Elecciones_DB.VOTOS_TEMPORALES (
         fecha_hora_voto DATETIME NOT NULL,
         dpi_ciudadano VARCHAR(13) NOT NULL,
         id_voto INT NOT NULL,

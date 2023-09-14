@@ -42,7 +42,7 @@ INNER JOIN
     CARGOS ON CANDIDATOS.cargo_id = CARGOS.id_cargo
 WHERE nombre_cargo = 'alcalde';
 
--- Cantidad de candidatos por partido (presidentes, vicepresidentes, diputados, alcaldes).
+-- Consulta  4 Cantidad de candidatos por partido (presidentes, vicepresidentes, diputados, alcaldes).
 SELECT
     P.nombre_partido AS "Partido",
     C.nombre_cargo AS "Cargo",
@@ -55,3 +55,27 @@ LEFT JOIN
     TSE_Elecciones_DB.CANDIDATOS CA ON P.id_partido = CA.partido_id AND C.id_cargo = CA.cargo_id
 GROUP BY
     P.nombre_partido, C.nombre_cargo;
+
+-- Consulta 5 Cantidad de votaciones por departamentos. (departamento, numero_votaciones)
+SELECT
+   nombre_departamento, COUNT(*) AS 'Cantidad de votos'
+FROM MESAS
+INNER JOIN
+    VOTOS ON MESAS.id_mesa = VOTOS.id_mesa
+INNER JOIN
+    DEPARTAMENTOS ON MESAS.id_departamento = DEPARTAMENTOS.id_departamento
+GROUP BY DEPARTAMENTOS.id_departamento;
+-- COnsulta 6 Cantidad de votos nulos (total).
+SELECT
+    COUNT(id_candidato)
+FROM  DETALLE_VOTOS
+WHERE id_candidato = -1;
+
+-- Consulta 7 Edades de los ciudadnos que si votaron
+SELECT
+    edad_ciudadano
+FROM CIUDADANOS
+INNER JOIN
+    VOTOS ON CIUDADANOS.dpi_ciudadano = VOTOS.dpi_ciudadano
+ORDER BY edad_ciudadano DESC
+LIMIT 10;
