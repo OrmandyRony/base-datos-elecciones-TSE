@@ -4,28 +4,21 @@ const mysql = require('mysql2/promise')
 
 
 // Esto podria convertirse en una funcion
-exports.consulta1 = async (req, res) => {
+exports.consulta10 = async (req, res) => {
 
     const consultaSQL1 = `
-    -- Consulta 1 Mostrar el nombre de los candidatos a presidentes y
--- vicepresidentes por partido (en este reporte/consulta se espera ver
--- tres columnas: "nombre presidente", "nombre vicepresidente", "partido").
--- 
-
-SELECT
-    P.nombre_candidato AS "nombre presidente",
-    V.nombre_candidato AS "nombre vicepresidente",
-    Pa.nombre_partido AS "partido"
-FROM
-    TSE_Elecciones_DB.CANDIDATOS P
-JOIN
-    TSE_Elecciones_DB.CANDIDATOS V ON P.partido_id = V.partido_id
-JOIN
-    TSE_Elecciones_DB.PARTIDOS Pa ON P.partido_id = Pa.id_partido
-WHERE
-    P.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Presidente')
-    AND V.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Vicepresidente');
-`;
+    -- Consulta 10 Mostrar el top 5 de la hora más concurrida en que los ciudadanos fueron a votar.
+    SELECT
+        DATE_FORMAT(V.fecha_hora_voto, '%H:%i') AS hora_voto,
+        COUNT(*) AS total_votos
+    FROM
+        TSE_Elecciones_DB.VOTOS AS V
+    GROUP BY
+        hora_voto
+    ORDER BY
+        total_votos DESC
+    LIMIT
+        5;`;
 
 
 

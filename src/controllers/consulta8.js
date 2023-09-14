@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise')
 
 
 // Esto podria convertirse en una funcion
-exports.consulta1 = async (req, res) => {
+exports.consulta8 = async (req, res) => {
 
     const consultaSQL1 = `
     -- Consulta 1 Mostrar el nombre de los candidatos a presidentes y

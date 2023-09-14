@@ -4,28 +4,19 @@ const mysql = require('mysql2/promise')
 
 
 // Esto podria convertirse en una funcion
-exports.consulta1 = async (req, res) => {
+exports.consulta11 = async (req, res) => {
 
     const consultaSQL1 = `
-    -- Consulta 1 Mostrar el nombre de los candidatos a presidentes y
--- vicepresidentes por partido (en este reporte/consulta se espera ver
--- tres columnas: "nombre presidente", "nombre vicepresidente", "partido").
--- 
-
-SELECT
-    P.nombre_candidato AS "nombre presidente",
-    V.nombre_candidato AS "nombre vicepresidente",
-    Pa.nombre_partido AS "partido"
-FROM
-    TSE_Elecciones_DB.CANDIDATOS P
-JOIN
-    TSE_Elecciones_DB.CANDIDATOS V ON P.partido_id = V.partido_id
-JOIN
-    TSE_Elecciones_DB.PARTIDOS Pa ON P.partido_id = Pa.id_partido
-WHERE
-    P.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Presidente')
-    AND V.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Vicepresidente');
-`;
+    -- Consulta 11 Cantidad de votos por género (Masculino, Femenino).
+    SELECT
+        CI.genero_ciudadano AS genero,
+        COUNT(V.id_voto) AS total_votos
+    FROM
+        TSE_Elecciones_DB.CIUDADANOS AS CI
+    JOIN
+        TSE_Elecciones_DB.VOTOS AS V ON CI.dpi_ciudadano = V.dpi_ciudadano
+    GROUP BY
+        genero;`;
 
 
 

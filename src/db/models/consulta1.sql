@@ -79,3 +79,45 @@ INNER JOIN
     VOTOS ON CIUDADANOS.dpi_ciudadano = VOTOS.dpi_ciudadano
 ORDER BY edad_ciudadano DESC
 LIMIT 10;
+
+-- Consulta 9 Top 5 de mesas más frecuentadas (mostrar no. Mesa y departamento al que pertenece).
+SELECT
+    M.id_mesa AS numero_mesa,
+    D.nombre_departamento AS departamento_perteneciente,
+    COUNT(V.id_voto) AS total_votos
+FROM
+    TSE_Elecciones_DB.MESAS AS M
+JOIN
+    TSE_Elecciones_DB.DEPARTAMENTOS AS D ON M.id_departamento = D.id_departamento
+JOIN
+    TSE_Elecciones_DB.VOTOS AS V ON M.id_mesa = V.id_mesa
+GROUP BY
+    M.id_mesa, D.nombre_departamento
+ORDER BY
+    total_votos DESC
+LIMIT
+    5;
+
+-- Consulta 10 Mostrar el top 5 de la hora más concurrida en que los ciudadanos fueron a votar.
+SELECT
+    DATE_FORMAT(V.fecha_hora_voto, '%H:%i') AS hora_voto,
+    COUNT(*) AS total_votos
+FROM
+    TSE_Elecciones_DB.VOTOS AS V
+GROUP BY
+    hora_voto
+ORDER BY
+    total_votos DESC
+LIMIT
+    5;
+
+-- Consulta 11 Cantidad de votos por género (Masculino, Femenino).
+SELECT
+    CI.genero_ciudadano AS genero,
+    COUNT(V.id_voto) AS total_votos
+FROM
+    TSE_Elecciones_DB.CIUDADANOS AS CI
+JOIN
+    TSE_Elecciones_DB.VOTOS AS V ON CI.dpi_ciudadano = V.dpi_ciudadano
+GROUP BY
+    genero;

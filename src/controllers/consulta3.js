@@ -4,28 +4,16 @@ const mysql = require('mysql2/promise')
 
 
 // Esto podria convertirse en una funcion
-exports.consulta1 = async (req, res) => {
+exports.consulta3 = async (req, res) => {
 
     const consultaSQL1 = `
-    -- Consulta 1 Mostrar el nombre de los candidatos a presidentes y
--- vicepresidentes por partido (en este reporte/consulta se espera ver
--- tres columnas: "nombre presidente", "nombre vicepresidente", "partido").
--- 
-
-SELECT
-    P.nombre_candidato AS "nombre presidente",
-    V.nombre_candidato AS "nombre vicepresidente",
-    Pa.nombre_partido AS "partido"
-FROM
-    TSE_Elecciones_DB.CANDIDATOS P
-JOIN
-    TSE_Elecciones_DB.CANDIDATOS V ON P.partido_id = V.partido_id
-JOIN
-    TSE_Elecciones_DB.PARTIDOS Pa ON P.partido_id = Pa.id_partido
-WHERE
-    P.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Presidente')
-    AND V.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Vicepresidente');
-`;
+    -- Consulta 3 Mostrar el nombre de los candidatos a alcaldes por partido
+    SELECT
+        nombre_candidato
+    FROM TSE_Elecciones_DB.CANDIDATOS
+    INNER JOIN
+    TSE_Elecciones_DB.CARGOS ON CANDIDATOS.cargo_id = CARGOS.id_cargo
+    WHERE nombre_cargo = 'alcalde';`;
 
 
 

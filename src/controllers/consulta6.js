@@ -4,27 +4,14 @@ const mysql = require('mysql2/promise')
 
 
 // Esto podria convertirse en una funcion
-exports.consulta1 = async (req, res) => {
+exports.consulta6 = async (req, res) => {
 
     const consultaSQL1 = `
-    -- Consulta 1 Mostrar el nombre de los candidatos a presidentes y
--- vicepresidentes por partido (en este reporte/consulta se espera ver
--- tres columnas: "nombre presidente", "nombre vicepresidente", "partido").
--- 
-
-SELECT
-    P.nombre_candidato AS "nombre presidente",
-    V.nombre_candidato AS "nombre vicepresidente",
-    Pa.nombre_partido AS "partido"
-FROM
-    TSE_Elecciones_DB.CANDIDATOS P
-JOIN
-    TSE_Elecciones_DB.CANDIDATOS V ON P.partido_id = V.partido_id
-JOIN
-    TSE_Elecciones_DB.PARTIDOS Pa ON P.partido_id = Pa.id_partido
-WHERE
-    P.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Presidente')
-    AND V.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Vicepresidente');
+    -- COnsulta 6 Cantidad de votos nulos (total).
+    SELECT
+        COUNT(id_candidato)
+    FROM  TSE_Elecciones_DB.DETALLE_VOTOS
+    WHERE id_candidato = -1;
 `;
 
 
@@ -40,7 +27,7 @@ WHERE
         const resultadConulta = await db.querywithoutclose(connection, sqlCommands[0], []);
 
         res.status(200).json({
-            body: { res: true, message: 'CONSULTA 1 EXITOSA', resultadConulta },
+            body: { res: true, message: 'CONSULTA 6 EXITOSA', resultadConulta },
         });
        
         // Cierra la conexión
