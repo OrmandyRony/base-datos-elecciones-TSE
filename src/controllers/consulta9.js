@@ -38,7 +38,7 @@ exports.consulta9 = async (req, res) => {
         const resultadConulta = await db.querywithoutclose(connection, sqlCommands[0], []);
 
         res.status(200).json({
-            body: { res: true, message: 'CONSULTA 1 EXITOSA', resultadConulta },
+            body: { res: true, message: 'CONSULTA 9 EXITOSA', resultadConulta },
         });
        
         // Cierra la conexión

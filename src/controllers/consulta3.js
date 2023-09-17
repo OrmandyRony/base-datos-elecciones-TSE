@@ -9,11 +9,18 @@ exports.consulta3 = async (req, res) => {
     const consultaSQL1 = `
     -- Consulta 3 Mostrar el nombre de los candidatos a alcaldes por partido
     SELECT
-        nombre_candidato
-    FROM TSE_Elecciones_DB.CANDIDATOS
-    INNER JOIN
-    TSE_Elecciones_DB.CARGOS ON CANDIDATOS.cargo_id = CARGOS.id_cargo
-    WHERE nombre_cargo = 'alcalde';`;
+    C.nombre_candidato AS Nombre,
+    P.nombre_partido AS Partido
+FROM
+    TSE_Elecciones_DB.CANDIDATOS AS C
+JOIN
+    TSE_Elecciones_DB.PARTIDOS AS P ON C.partido_id = P.id_partido
+JOIN
+    TSE_Elecciones_DB.CARGOS AS CA ON C.cargo_id = CA.id_cargo
+WHERE
+    CA.nombre_cargo = 'alcalde'
+ORDER BY
+    Partido, Nombre;`;
 
 
 
@@ -28,7 +35,7 @@ exports.consulta3 = async (req, res) => {
         const resultadConulta = await db.querywithoutclose(connection, sqlCommands[0], []);
 
         res.status(200).json({
-            body: { res: true, message: 'CONSULTA 1 EXITOSA', resultadConulta },
+            body: { res: true, message: 'CONSULTA 3 EXITOSA', resultadConulta },
         });
        
         // Cierra la conexión

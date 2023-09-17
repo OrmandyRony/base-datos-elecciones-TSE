@@ -9,9 +9,11 @@ exports.consulta6 = async (req, res) => {
     const consultaSQL1 = `
     -- COnsulta 6 Cantidad de votos nulos (total).
     SELECT
-        COUNT(id_candidato)
-    FROM  TSE_Elecciones_DB.DETALLE_VOTOS
-    WHERE id_candidato = -1;
+    COUNT(DISTINCT id_voto) AS cantidad_votos_nulos
+    FROM
+        TSE_Elecciones_DB.DETALLE_VOTOS AS V
+    WHERE
+        V.id_candidato = '-1';
 `;
 
 

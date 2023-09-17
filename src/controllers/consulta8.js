@@ -11,20 +11,19 @@ exports.consulta8 = async (req, res) => {
 -- vicepresidentes por partido (en este reporte/consulta se espera ver
 -- tres columnas: "nombre presidente", "nombre vicepresidente", "partido").
 -- 
+SELECT p.nombre_candidato AS presidente, v.nombre_candidato AS vicepresidente, COUNT(*) AS conteo
+FROM TSE_Elecciones_DB.CANDIDATOS p
+JOIN TSE_Elecciones_DB.CANDIDATOS v
+ON
+	p.partido_id = v.partido_id
+	AND p.cargo_id = 1
+	AND v.cargo_id = 2
+JOIN TSE_Elecciones_DB.DETALLE_VOTOS dv
+ON dv.id_candidato = p.id_candidato
+GROUP BY presidente, vicepresidente
+ORDER BY conteo DESC
+LIMIT 10;
 
-SELECT
-    P.nombre_candidato AS "nombre presidente",
-    V.nombre_candidato AS "nombre vicepresidente",
-    Pa.nombre_partido AS "partido"
-FROM
-    TSE_Elecciones_DB.CANDIDATOS P
-JOIN
-    TSE_Elecciones_DB.CANDIDATOS V ON P.partido_id = V.partido_id
-JOIN
-    TSE_Elecciones_DB.PARTIDOS Pa ON P.partido_id = Pa.id_partido
-WHERE
-    P.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Presidente')
-    AND V.cargo_id = (SELECT id_cargo FROM TSE_Elecciones_DB.CARGOS WHERE nombre_cargo = 'Vicepresidente');
 `;
 
 

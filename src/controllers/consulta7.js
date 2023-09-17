@@ -9,12 +9,18 @@ exports.consulta7 = async (req, res) => {
     const consultaSQL1 = `
     -- Consulta 7 Edades de los ciudadnos que si votaron
     SELECT
-        TSE_Elecciones_DB.CIUDADANOS.edad_ciudadano
-    FROM TSE_Elecciones_DB.CIUDADANOS
-    INNER JOIN
-        VOTOS ON TSE_Elecciones_DB.CIUDADANOS.dpi_ciudadano = TSE_Elecciones_DB.VOTOS.dpi_ciudadano
-    ORDER BY TSE_Elecciones_DB.CIUDADANOS.edad_ciudadano DESC
-    LIMIT 10;
+    CI.edad_ciudadano AS edad,
+    COUNT(V.dpi_ciudadano) AS cantidad
+    FROM
+        TSE_Elecciones_DB.CIUDADANOS AS CI
+    JOIN
+        TSE_Elecciones_DB.VOTOS AS V ON CI.dpi_ciudadano = V.dpi_ciudadano
+    GROUP BY
+        CI.edad_ciudadano
+    ORDER BY
+        cantidad DESC
+    LIMIT
+    10;
     `;
 
 

@@ -8,18 +8,18 @@ exports.consulta4 = async (req, res) => {
 
     const consultaSQL1 = `
     -- Consulta  4 Cantidad de candidatos por partido (presidentes, vicepresidentes, diputados, alcaldes).
-    SELECT
-        P.nombre_partido AS "Partido",
-        C.nombre_cargo AS "Cargo",
-        COUNT(CA.id_candidato) AS "Número de Candidatos"
-    FROM
-        TSE_Elecciones_DB.PARTIDOS P
-    CROSS JOIN
-        TSE_Elecciones_DB.CARGOS C
-    LEFT JOIN
-        TSE_Elecciones_DB.CANDIDATOS CA ON P.id_partido = CA.partido_id AND C.id_cargo = CA.cargo_id
-    GROUP BY
-        P.nombre_partido, C.nombre_cargo;`;
+    SELECT P.nombre_partido      AS Partido,
+    COUNT(C.id_candidato) AS Cantidad
+FROM TSE_Elecciones_DB.PARTIDOS AS P
+      LEFT JOIN
+  TSE_Elecciones_DB.CANDIDATOS AS C ON P.id_partido = C.partido_id
+      LEFT JOIN
+  TSE_Elecciones_DB.CARGOS AS CA ON C.cargo_id = CA.id_cargo
+WHERE CA.nombre_cargo IN
+   ('presidente', 'vicepresidente', 'diputado congreso lista nacional', 'diputado congreso distrito electoral',
+    'diputado parlamento centroamericano', 'alcalde')
+GROUP BY Partido;
+`;
 
 
 
@@ -34,7 +34,7 @@ exports.consulta4 = async (req, res) => {
         const resultadConulta = await db.querywithoutclose(connection, sqlCommands[0], []);
 
         res.status(200).json({
-            body: { res: true, message: 'CONSULTA 1 EXITOSA', resultadConulta },
+            body: { res: true, message: 'CONSULTA 4 EXITOSA', resultadConulta },
         });
        
         // Cierra la conexión
