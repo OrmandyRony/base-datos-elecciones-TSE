@@ -7,6 +7,7 @@
 - Excalidraw para el modelo conceptual
 - Data modeler para la realización del modelo lógico y físico (utilizando la notación de Barker)
 - MySQL como DBMS
+- API realizada en Node JS
 
 ## Requisitos
 
@@ -50,6 +51,8 @@ En este caso todos los atributos son obligatorios.
 En el caso de la edad del votante debe ser mayor a dieciocho años.
 
 Un candidato puede estar afiliado a un solo partido, o de otra forma un partido puede tener muchos candidatos pero un candidato solo puede tener un cargo.
+
+Los datos nulos seran representado por un -1.
 
 ## Modelo Conceptual
 
@@ -108,17 +111,156 @@ Cada elemento de la entidad DEPARTAMENTO puede estar asociado con una o muchos e
 ![Modelo_fisico.png](README%2043b1224bc56d42298844b712fdccdb74/Modelo_fisico.png)
 
 ## Implementación
+Para este proyecto usaremos las convenciones de oracle para la sintaxis de SQL.
+
+**Tabla DEPARTAMENTOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.DEPARTAMENTOS (
+    id_departamento INT NOT NULL AUTO_INCREMENT,
+    nombre_departamento VARCHAR(100) NOT NULL,
+    CONSTRAINT PK_departamento PRIMARY KEY (id_departamento)
+);
+
+```
+
+- Esta tabla almacena información sobre los departamentos en el contexto de las elecciones. Se utiliza un campo "id_departamento" como clave primaria y un campo "nombre_departamento" para almacenar el nombre del departamento. El tipo de datos "VARCHAR(100)" se eligió para el nombre del departamento porque es una cadena de caracteres de longitud variable.
+
+**Tabla CIUDADANOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CIUDADANOS (
+    dpi_ciudadano VARCHAR(13) NOT NULL,
+    nombre_ciudadano VARCHAR(100) NOT NULL,
+    apellido_ciudadano VARCHAR(100) NOT NULL,
+    edad_ciudadano INT NOT NULL,
+    genero_ciudadano VARCHAR(1) NOT NULL,
+    direccion_ciudadano VARCHAR(100) NOT NULL,
+    telefono_ciudadano VARCHAR(12) NOT NULL,
+    CONSTRAINT PK_ciudadano PRIMARY KEY (dpi_ciudadano)
+);
+
+```
+
+- Esta tabla almacena información sobre los ciudadanos que participan en las elecciones. Se utiliza el campo "dpi_ciudadano" como clave primaria, ya que representa un identificador único (DPI). Los otros campos, como "nombre_ciudadano" y "apellido_ciudadano," se utilizan para almacenar información personal. Los tipos de datos elegidos reflejan el tipo de información que se almacenará en cada campo.
+
+**Tabla PARTIDOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.PARTIDOS (
+    id_partido INT NOT NULL AUTO_INCREMENT,
+    nombre_partido VARCHAR(50) NOT NULL,
+    siglas_partido VARCHAR(15) NOT NULL,
+    fundacion_partido DATE,
+    CONSTRAINT PK_partido PRIMARY KEY (id_partido)
+);
+
+```
+
+- Esta tabla almacena información sobre los partidos políticos que participan en las elecciones. Los campos incluyen un identificador único ("id_partido"), el nombre del partido y sus siglas. La fecha de fundación del partido también se almacena como tipo de datos "DATE."
+
+**Tabla CARGOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CARGOS (
+    id_cargo INT NOT NULL AUTO_INCREMENT,
+    nombre_cargo VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_cargo PRIMARY KEY (id_cargo)
+);
+
+```
+
+- Esta tabla almacena información sobre los cargos políticos disponibles en las elecciones. Se utiliza un campo "id_cargo" como clave primaria y un campo "nombre_cargo" para almacenar el nombre del cargo.
+
+**Tabla CANDIDATOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.CANDIDATOS (
+    id_candidato INT NOT NULL AUTO_INCREMENT,
+    nombre_candidato VARCHAR(50) NOT NULL,
+    fecha_nacimiento_candidato DATE,
+    cargo_id INT NOT NULL,
+    partido_id INT NOT NULL,
+    CONSTRAINT PK_candidato PRIMARY KEY (id_candidato),
+    FOREIGN KEY (cargo_id) REFERENCES CARGOS(id_cargo),
+    FOREIGN KEY (partido_id) REFERENCES PARTIDOS(id_partido)
+);
+
+```
+
+- Esta tabla almacena información sobre los candidatos a cargos políticos. Los campos incluyen un identificador único ("id_candidato"), el nombre del candidato y la fecha de nacimiento. Los campos "cargo_id" y "partido_id" se utilizan para establecer relaciones con las tablas CARGOS y PARTIDOS mediante claves foráneas.
+
+**Tabla MESAS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.MESAS (
+    id_mesa INT NOT NULL AUTO_INCREMENT,
+    id_departamento INT NOT NULL,
+    CONSTRAINT PK_mesa PRIMARY KEY (id_mesa),
+    FOREIGN KEY (id_departamento) REFERENCES DEPARTAMENTOS(id_departamento)
+);
+
+```
+
+- Esta tabla almacena información sobre las mesas de votación. Cada mesa se identifica con un "id_mesa" único y está asociada a un departamento mediante una clave foránea ("id_departamento").
+
+**Tabla VOTOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.VOTOS (
+    id_voto INT NOT NULL AUTO_INCREMENT,
+    fecha_hora_voto DATETIME NOT NULL,
+    dpi_ciudadano VARCHAR(13) NOT NULL,
+    id_mesa INT NOT NULL,
+    CONSTRAINT PK_voto PRIMARY KEY (id_voto),
+    FOREIGN KEY (dpi_ciudadano) REFERENCES CIUDADANOS(dpi_ciudadano),
+    FOREIGN KEY (id_mesa) REFERENCES MESAS(id_mesa)
+);
+
+```
+
+- Esta tabla almacena información sobre los votos emitidos en las elecciones. Cada voto se registra con un "id_voto" único, la fecha y hora en que se emitió, el DPI del ciudadano que votó y la mesa de votación en la que se emitió el voto. Las claves foráneas se utilizan para vincular los votos a los ciudadanos y las mesas correspondientes.
+
+**Tabla DETALLE VOTOS**:
+
+```sql
+CREATE TABLE IF NOT EXISTS TSE_Elecciones_DB.DETALLE_VOTOS (
+    id_detalle_voto INT NOT NULL AUTO_INCREMENT,
+    id_voto INT NOT NULL,
+    id_candidato INT NOT NULL,
+    CONSTRAINT PK_detalle_voto PRIMARY KEY (id_detalle_voto),
+    FOREIGN KEY (id_voto) REFERENCES VOTOS(id_voto),
+    FOREIGN KEY (id_candidato) REFERENCES CANDIDATOS(id_candidato)
+);
+
+```
+
+- Esta tabla almacena detalles específicos de cada voto emitido, relacionando un voto ("id_voto") con un candidato ("id_candidato"). Cada registro en esta tabla representa un voto emitido por un ciudadano a un candidato específico.
 
 ## Pruebas
+## 
+
+Para la prueba se recomienda el uso de postman
+
+| Nombre | Ruta en la API | Descripcion |
+| --- | --- | --- |
+| Consulta 1 | http://localhost:5000/consulta1 | Mostrar el nombre de los candidatos a presidentes y vicepresidentes por partido (en este reporte/consulta se espera ver tres columnas: "nombre presidente", "nombre vicepresidente", "partido"). |
+| Consulta 2  | http://localhost:5000/consulta1 | Mostrar el número de candidatos a diputados (esto incluye lista nacional, distrito electoral, parlamento) por cada partido. |
+| Consulta 3  | http://localhost:5000/consulta3 | Mostrar el nombre de los candidatos a alcalde por partido. |
+| Consulta 4  | http://localhost:5000/consulta4 | Cantidad de candidatos por partido (presidentes, vicepresidentes, diputados, alcaldes). |
+| Consulta 5  | http://localhost:5000/consulta5 | Cantidad de votaciones por departamentos. |
+| Consulta 6  | http://localhost:5000/consulta6 | Cantidad de votos nulos. |
+| Consulta 7  | http://localhost:5000/consulta7 | Top 10 de edad de ciudadanos que realizaron su voto. |
+| Consulta 8  | http://localhost:5000/consulta8 | Top 10 de candidatos más votados para presidente y vicepresidente (el voto por presidente incluye el vicepresidente). |
+| Consulta 9 | http://localhost:5000/consulta9 | Top 5 de mesas más frecuentadas (mostrar no. Mesa y departamento al que pertenece). |
+| Consulta 10 | http://localhost:5000/consulta10 | Mostrar el top 5 de la hora más concurrida en que los ciudadanos fueron a votar. |
+| Consulta 11  | http://localhost:5000/consulta11 | Cantidad de votos por género (Masculino, Femenino). |
 
 ## Iniciar servidor con NODEJS
-1. npm init -y
-2. npm install express
-3. npm install nodemon -D
-4. npm install dotenv
-5. npm install mysql2
-6. npm install cors
-7. crear achivo .gitignore
-Porque usaron tal atributo y su tipo
-Eliminar tablas 
-Consulta foro
+Debe tomar encuenta que debe tener una base de datos MySQL previamente creada y cambiar los datos en el archivo .env.
+
+``` Bash
+npm install
+node index.js
+```
+
